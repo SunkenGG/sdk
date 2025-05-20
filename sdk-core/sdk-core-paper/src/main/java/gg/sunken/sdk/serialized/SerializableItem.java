@@ -131,7 +131,12 @@ public class SerializableItem {
             }
         }
 
-        //TODO: nbt serialization
+        if (itemStack.hasItemMeta()) {
+            String nbtDataString = NBT.readNbt(itemStack).toString();
+            if (nbtDataString != null) {
+                this.nbtDataString = nbtDataString;
+            }
+        }
 
         enchantments.putAll(itemStack.getEnchantments());
         this.itemStack = itemStack;
@@ -223,7 +228,14 @@ public class SerializableItem {
         }
 
         if (document.has("nbt-data") && item.getType() != Material.AIR) {
-            //TODO: nbt deserialization
+            String nbtDataString = document.get("nbt-data").getAsString();
+            ReadWriteNBT nbt = NBT.parseNBT(nbtDataString);
+            String type = nbt.getString("id");
+            if (!type.equals("minecraft:air")) {
+                NBT.modify(item, readWriteItemNBT -> {
+                    readWriteItemNBT.mergeCompound(nbt);
+                });
+            }
         }
 
         return new SerializableItem(item);

@@ -2,6 +2,7 @@ package gg.sunken.sdk.scheduler;
 
 import gg.sunken.sdk.utils.TickUtil;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -35,7 +36,7 @@ public class GlobalSchedulerExecutor implements ScheduledExecutor {
             throw new IllegalArgumentException("Delay cannot be negative");
         }
 
-        io.papermc.paper.threadedregions.scheduler.ScheduledTask task = scheduler.runDelayed(plugin, scheduledTask -> command.run(), TickUtil.toTicks(delay, unit));
+        ScheduledTask task = scheduler.runDelayed(plugin, scheduledTask -> command.run(), TickUtil.toTicks(delay, unit));
         return task::cancel;
     }
 
